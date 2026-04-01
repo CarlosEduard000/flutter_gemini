@@ -6,12 +6,6 @@ import 'package:gemini_app/presentation/providers/chat/is_gemini_writing.dart';
 import 'package:gemini_app/presentation/providers/users/user_provider.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final messages = <types.Message>[
-  // types.TextMessage(author: user, id: Uuid().v4(), text: 'Hola Mundo'),
-  // types.TextMessage(author: user, id: Uuid().v4(), text: 'Hola Mundo 2'),
-  // types.TextMessage(author: geminiUser, id: Uuid().v4(), text: 'Hola Mundo 3'),
-];
-
 class BasicPromptScreen extends ConsumerWidget {
   const BasicPromptScreen({super.key});
 
