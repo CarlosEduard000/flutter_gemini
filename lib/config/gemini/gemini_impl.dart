@@ -15,4 +15,26 @@ class GeminiImpl {
       throw Exception("No se pudo respoder Gemini");
     }
   }
+
+  // Stream
+  Stream<String> getResponseStream(String prompt) async* {
+    //TODO: Tener presente que enviaremos imágenes
+    //! Multipart
+
+    final body = jsonEncode({'prompt': prompt});
+    final response = await _http.post(
+      '/basic-prompt-stream',
+      data: body,
+      options: Options(responseType: ResponseType.stream),
+    );
+
+    final stream = response.data.stream as Stream<List<int>>;
+    String buffer = '';
+
+    await for (final chunk in stream){
+      final chunkString = utf8.decode(chunk, allowMalformed: true);
+      buffer += chunkString;
+      yield buffer;
+    }
+  }
 }

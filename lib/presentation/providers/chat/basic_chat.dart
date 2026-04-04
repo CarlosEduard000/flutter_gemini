@@ -22,12 +22,13 @@ class BasicChat extends _$BasicChat {
 
   void addMessage({required PartialText partialText, required User user}) {
     //TODO: Agregar condicion cuando vengan imagenes
-    _addTextMessage(partialText, user);
+    _addTextMessage(partialText, user);    
   }
 
   void _addTextMessage(PartialText partialText, User author) {
     _createTextMessage(partialText.text, author);
-    _geminiTextResponse(partialText.text);
+    // _geminiTextResponse(partialText.text);
+    _geminiTextResponseStream(partialText.text);
   }
 
   void _geminiTextResponse(String prompt) async {
@@ -36,8 +37,23 @@ class BasicChat extends _$BasicChat {
     final textResponse = await gemini.getResponse(prompt);
 
     _setGeminiWritingStatus(false);
-
     _createTextMessage(textResponse, geminiUser);
+  }
+
+  void _geminiTextResponseStream(String prompt) async {
+    _createTextMessage('Gemini está pensando...', geminiUser);
+    gemini.getResponseStream(prompt).listen((responseChunk) {
+      if(responseChunk.isEmpty) return;
+
+      final updateMessages = [...state];
+      final updateMessage = (updateMessages.first as TextMessage).copyWith(
+        text: responseChunk,
+      );
+
+      updateMessages[0] = updateMessage;
+      state = updateMessages;
+    });
+    // _createTextMessage(textResponse, geminiUser);
   }
 
   // Helper methods
